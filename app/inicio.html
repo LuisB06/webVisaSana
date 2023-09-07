@@ -145,8 +145,30 @@
                 <button type="submit" class="btn btn-outline-success" id="btn-task-save" style="margin: 10px; width: 120px;">Save</button>
               </div>
         </form>
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+          <h1 class="h2">Lista de Productos</h1>
+        </div>
+        <div class="row">
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Buscar..." id="input-search">
+            <button class="btn btn-outline-secondary" type="button" id="btn-clean">Limpiar</button>
+          </div>
+        </div>
          <!---div class="row justify-content-md-center"--->
-           <div class="row" id="tasks-container"></div>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Stock</th>
+                <th>Precio</th>
+                <th>Opciones</th>
+              </tr>
+            </thead>
+            <tbody id="list_products">
+            </tbody>
+          </table>
          <!---/div-->
     </main>
 

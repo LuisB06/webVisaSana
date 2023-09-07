@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  nginx:
+    container_name: NGINX_DEV_VS
+    restart: always
+    image: nginx:1.25.1-alpine3.17-slim
+    volumes:
+      - ../app:/usr/share/nginx/html
+    ports:
+      - 80:80
+
+networks:
+  default:
+    name: dev_vs_net
