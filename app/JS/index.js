@@ -49,7 +49,6 @@ const build_table=(list_produts,element_list_products)=>{
     list_produts.forEach((task,index)=>{
         html+=/*html */`
             <tr>
-                <td>${index+1}</td>
                 <td>${task.name}</td>
                 <td>${task.description}</td>
                 <td>${task.stock}</td>
@@ -81,6 +80,8 @@ window.addEventListener('DOMContentLoaded', async () =>{
     let list_products=[];
     const input_search=document.getElementById("input-search");
     const btn_clean=document.getElementById("btn-clean");
+    const header_list_products=document.getElementById("header_list_products");
+    const th = header_list_products.querySelectorAll("th");
 
     onGetTasks((querySnapshot) => {
         list_products=[];
@@ -96,12 +97,57 @@ window.addEventListener('DOMContentLoaded', async () =>{
 
         build_table(filter_by_name_description(list_products,input_search),tasksContainer);
     });
+
     input_search.addEventListener("keyup",()=>{
         build_table(filter_by_name_description(list_products,input_search),tasksContainer);
     });
+
     btn_clean.addEventListener("click",()=>{
         input_search.value="";
         build_table(filter_by_name_description(list_products,input_search),tasksContainer);
+    });
+
+    th.forEach(item=>{
+        item.addEventListener("click",(e)=>{
+            const target=e.target;
+            const list_class=target.classList;
+            const asc=list_class.contains("asc");
+            const data_key=target.dataset.key;
+
+            if(typeof(data_key)==="undefined" || data_key===null) return;
+
+            th.forEach(item=>{
+                item.removeAttribute("style");
+                item.classList.remove("asc");
+                item.classList.remove("desc");
+            });
+            if(asc) {
+                list_class.remove("asc");
+                list_class.add("desc");
+            } else {
+                list_class.remove("desc");
+                list_class.add("asc");
+            }
+            target.style.backgroundColor="#D4D4D4";
+
+            const sort_list_products = filter_by_name_description(list_products,input_search).sort((a,b)=>{
+                const element_a=a[data_key];
+                const element_b=b[data_key];
+
+                if(typeof(element_a)!=="string" || typeof(element_b)!=="string") {
+                    const number_element_a=parseFloat(element_a);
+                    const number_element_b=parseFloat(element_b);
+
+                    if(isNaN(number_element_a) || isNaN(number_element_b)) return;
+
+                    return number_element_a-number_element_b;
+                }
+                
+                return element_a.trim().localeCompare(element_b.trim());
+            });
+            
+            build_table(asc?sort_list_products.reverse():sort_list_products,tasksContainer);
+        });
     });
 });
 
