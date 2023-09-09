@@ -41,7 +41,16 @@
 
 
   export const saveTask = (name, description,stock, precio) => {
-    addDoc(collection(db, 'tasks'),{name: name, description: description,stock: stock, precio: precio})
+    const date_now=new Date(Date.now());
+    const date_now_string=`${date_now.getFullYear().toString()}-${(date_now.getMonth()+1).toString().padStart(2,"0")}-${date_now.getDate().toString().padStart(2,"0")}`;
+
+    addDoc(collection(db, 'tasks'),{
+      name: name, 
+      description: description,
+      stock: stock, 
+      precio: precio,
+      date: date_now_string
+    })
   };
   export const getTasks = () => getDocs(collection(db, 'tasks'));
 

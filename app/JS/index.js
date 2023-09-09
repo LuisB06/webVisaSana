@@ -17,6 +17,16 @@ const build_btn_delete=()=>{
 
     btnDelete.forEach(btn => {
         btn.addEventListener('click', ({target: {dataset}}) => {
+            if(!confirm("¿Esta seguro que desea eliminar el registro?")) return;
+
+            const header_list_products=document.getElementById("header_list_products");
+            const th=header_list_products.querySelectorAll("th");
+
+            th.forEach(item=>{
+                item.removeAttribute("style");
+                item.classList.remove("asc");
+                item.classList.remove("desc");
+            });
             deleteTask(dataset.id)
         });
     });
@@ -46,9 +56,10 @@ const build_btn_edit=()=>{
 const build_table=(list_produts,element_list_products)=>{
     let html="";
 
-    list_produts.forEach((task,index)=>{
+    list_produts.forEach((task)=>{
         html+=/*html */`
             <tr>
+                <td>${typeof(task.date)==="undefined"?"No Definida":task.date}</td>
                 <td>${task.name}</td>
                 <td>${task.description}</td>
                 <td>${task.stock}</td>
@@ -142,6 +153,14 @@ window.addEventListener('DOMContentLoaded', async () =>{
 
                     return number_element_a-number_element_b;
                 }
+
+                const number_date_elemant_a=Date.parse(element_a);
+                const number_date_element_b=Date.parse(element_b);
+
+                if(!isNaN(number_date_elemant_a) && !isNaN(number_date_element_b)){
+                    
+                    return number_date_elemant_a-number_date_element_b;
+                }
                 
                 return element_a.trim().localeCompare(element_b.trim());
             });
@@ -160,7 +179,7 @@ taskForm.addEventListener("submit", (e) => {
     const precio = taskForm['task-precio']
 
     if (!editStatus){
-        saveTask(name.value, description.value, parseFloat(precio.value), parseFloat(stock.value))
+        saveTask(name.value, description.value, parseFloat(precio.value), parseFloat(stock.value));
     }else{
         updateTask(id,{
             name: name.value,
@@ -175,4 +194,12 @@ taskForm.addEventListener("submit", (e) => {
 
     taskForm.reset();
 
+    const header_list_products=document.getElementById("header_list_products");
+    const th=header_list_products.querySelectorAll("th");
+
+    th.forEach(item=>{
+        item.removeAttribute("style");
+        item.classList.remove("asc");
+        item.classList.remove("desc");
+    });
 });
