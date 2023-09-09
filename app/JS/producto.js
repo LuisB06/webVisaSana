@@ -52,30 +52,78 @@ window.addEventListener("DOMContentLoaded",async ()=>{
         }
     });
 
+    let stop_render=false;
+
     onGetShoppingCar((querySnapshot)=>{
         list_soppingcar.innerHTML=""
         let total_compra=0
         shoppingcar=[]
 
-        querySnapshot.forEach(async doc=>{
+        querySnapshot.forEach(doc=>{
             const item={
                 id: doc.id,
                 ...doc.data()
             }
-            const product=(await getTask(item.id_product)).data()
 
-            shoppingcar.push(item)
-            list_soppingcar.innerHTML+=`
-                <tr>
-                    <td>${product.name}</td>
-                    <td>${item.cantidad}</td>
-                    <td>${product.precio}</td>
-                    <td>${item.cantidad*product.precio}</td>
-                </tr>
-            `
-            total_compra+=item.cantidad*product.precio
-            elements_form.total_compra.innerHTML=total_compra
+            shoppingcar.push(item);
         });
+
+        if(stop_render) return;
+        (async ()=>{
+            for(const item of shoppingcar){
+                const product=(await getTask(item.id_product)).data()
+    
+                list_soppingcar.innerHTML+=/*html*/`
+                    <tr>
+                        <td>
+                            <button class ='btn-delete btn btn-outline-danger' data-id="${item.id}" data-quantity="${item.cantidad}" data-productid="${item.id_product}">X</button>
+                        </td>
+                        <td>${product.name}</td>
+                        <td>${item.cantidad}</td>
+                        <td>${product.precio}</td>
+                        <td>${item.cantidad*product.precio}</td>
+                    </tr>
+                `
+                total_compra+=item.cantidad*product.precio
+                elements_form.total_compra.innerHTML=total_compra
+            }
+
+            const btn_delete=list_soppingcar.querySelectorAll(".btn-delete");
+            
+            btn_delete.forEach(item=>{
+                item.addEventListener("click",({target: {dataset}})=>{
+                    if(!confirm("¿Esta seguro de eliminar el producto?")) return;
+
+                    const id=dataset.id;
+                    const product_id=dataset.productid;
+                    const quantity=parseFloat(dataset.quantity);
+
+                    remove_shopping_car(id,quantity,product_id);
+                });
+            });
+        })()
+    });
+
+    const btn_delete_all=document.getElementById("btn_delete_all");
+
+    btn_delete_all.addEventListener("click",(e)=>{
+        if(shoppingcar.length<=0){
+            alert("No hay productos en la lista.");
+
+            return;
+        }
+
+        if(!confirm("¿Está seguro de eliminar todos los productos de la lista?")) return;
+
+        stop_render=true;
+        elements_form.total_compra.innerHTML="";
+        (async ()=>{
+            const new_list_shopping_car=structuredClone(shoppingcar);
+
+            
+            for(const item of new_list_shopping_car) await remove_shopping_car(item.id,item.cantidad,item.id_product);
+            stop_render=false;
+        })();
     });
 });
 
@@ -135,5 +183,20 @@ btn_comprar.addEventListener("click",async (e)=>{
         });
         alert("EXITO AL REALIZAR LA COMPRA");
     }
-    else alert("Por favor añada productos.")
+    else alert("Por favor añada productos.");
 });
+
+const remove_shopping_car=async (id,quantity,product_id)=>{
+    const product=(await getTask(product_id)).data();
+
+    await updateTask(product_id,{
+        stock: product.stock+quantity
+    });
+    await deleteShoppingCar(id);
+
+    form_producto.reset();
+    id_producto_autocompletado.value="";
+    select_product={};
+    elements_form.cantidad_total.innerHTML="";
+    if(shoppingcar.length<=0) elements_form.total_compra.innerHTML="";
+}

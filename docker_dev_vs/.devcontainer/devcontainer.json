@@ -1,0 +1,26 @@
+{
+    "name": "dev_vs",
+    "dockerComposeFile": "../docker-compose.yml",
+    "service": "nginx",
+    "workspaceFolder": "/usr/share/nginx/html",
+    "forwardPorts": [80],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "christian-kohler.path-intellisense",
+                "waderyan.nodejs-extension-pack",
+                "xabikos.JavaScriptSnippets",
+                "formulahendry.auto-complete-tag",
+                "wayou.vscode-todo-highlight",
+                "ChakrounAnas.turbo-console-log",
+                "usernamehw.errorlens",
+                "WallabyJs.console-ninja",
+                "Zignd.html-css-class-completion",
+                "ecmel.vscode-html-css",
+                "HansUXdev.bootstrap5-snippets",
+                "kisstkondoros.vscode-gutter-preview",
+                "Tobermory.es6-string-html"
+            ]
+        }
+    }
+}
