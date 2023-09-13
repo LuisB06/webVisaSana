@@ -21,11 +21,16 @@ const  login_validation=async ()=>{
     const result_user = new_data_user.data();
     const register_product = document.getElementById("product_register");
     const register_user = document.getElementById("user_register");
+    const loader_container = document.getElementById("loader-container");
 
     if(!new_data_user.exists()) { $.unblockUI(); logout(); alert("Usuario invalido."); return; }
 
     role=result_user.role;
     $.unblockUI();
+    if(typeof(loader_container)!=="undefined" && loader_container!==null){
+        loader_container.style.visibility="hidden";
+        loader_container.style.opacity="0";
+    }
     if(role!=="A" && role!=="B") {
         
         logout();

@@ -40,15 +40,17 @@ const showUsers = (data_user,btn_submit)=>{
             const user = item.data();
 
             html+=/*html*/`
-                <div class="d-flex" style="margin: 5px;">
-                    <h5 class="col-md-2">${user.name}</h5>
-                    <h5 class="col-md-2">${user.lastname}</h5>
-                    <h5 class="col-md-2">${user.email}</h5>
-                    <h5 class="col-md-2">${user.role==="A"?"Jefe":"Empleado"}</h5>
-                    <h5 class="col-md-2">${user.address}</h5>
-                    <button class ='btn-delete btn btn-outline-danger' data-id="${item.id}">Delete</button>
-                    <button class ='btn-edit btn btn-outline-primary' data-id="${item.id}" style="margin-left: 10px;">Edit</button>
-                </div>
+                <tr>
+                    <td>${user.name}</td>
+                    <td>${user.lastname}</td>
+                    <td>${user.email}</td>
+                    <td>${user.role==="A"?"Jefe":"Empleado"}</td>
+                    <td>${user.address}</td>
+                    <td>
+                        <button class ='btn-delete btn btn-outline-danger' data-id="${item.id}">Delete</button>
+                        <button class ='btn-edit btn btn-outline-primary' data-id="${item.id}" style="margin-left: 10px;">Edit</button>
+                    </td>
+                </tr>
             `;
         });
 

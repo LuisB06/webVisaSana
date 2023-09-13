@@ -12,6 +12,7 @@
 
         <!--MIS ESTILOS-->
         <link rel="stylesheet" href="./css/loader.css">
+        <link rel="stylesheet" href="./css/loader-container.css">
         <!----------->
    
         <style> 
@@ -70,7 +71,7 @@
     <link rel="stylesheet" href="css/dashboard.css">
   </head>
 <body>
-    
+  <div id="loader-container" class="bg-light" ></div>
   <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
     <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">Vida Sana Company</a>
     <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
@@ -190,7 +191,21 @@
             </div>
         </form>
          <!---div class="row justify-content-md-center"--->
-           <div class="row" id="user-container"></div>
+         <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Apellido</th>
+              <th>Email</th>
+              <th>Nivel</th>
+              <th>Dirección</th>
+              <th>Opciones</th>
+            </tr>
+          </thead>
+          <tbody id="user-container">
+
+          </tbody>
+         </table>
          <!---/div-->
     </main>
 
