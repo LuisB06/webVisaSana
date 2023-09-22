@@ -112,6 +112,7 @@ window.addEventListener("DOMContentLoaded",async(e)=>{
                 },
             ],
             content: [
+                {text: "Vida Sana", style: "header"},
                 {
                     image: "logo",
                     width: 100,
@@ -181,7 +182,9 @@ window.addEventListener("DOMContentLoaded",async(e)=>{
                 }
             ],
             images:{
-                "logo": "http://127.0.0.1:5500/img/128px_logo.png"
+                //"logo": "http://127.0.0.1:5500/img/128px_logo.png",
+                //"logo": "http://ubuntu-pc/img/3765556_cabbage_lettuce_salad_icon.svg",
+                "logo": "http://ubuntu-pc/img/128px_logo.png"
             },
             styles:{
                 "size":{
@@ -197,14 +200,21 @@ window.addEventListener("DOMContentLoaded",async(e)=>{
                 },
                 "m-10":{
                     margin:[10,10,10,10]
+                },
+                "header":{
+                    fontSize: "30",
+                    alignment: "center",
+                    bold: true
                 }
             }
         };
 
-        if(date_filter!=="") document_definition.content[1].table.body.push([
+        
+        if(date_filter!=="") document_definition.content[2].table.body.push([
             {text: "Filtrado por:", style:["size","table-header"]},
             {text: date_filter, style:["size"]},
         ]);
+        
 
         open_pdf(document_definition);
     });
