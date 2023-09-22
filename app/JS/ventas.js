@@ -181,7 +181,7 @@ window.addEventListener("DOMContentLoaded",async(e)=>{
                 }
             ],
             images:{
-                "logo": "https://cdn-icons-png.flaticon.com/512/5071/5071208.png"
+                "logo": "http://127.0.0.1:5500/img/128px_logo.png"
             },
             styles:{
                 "size":{
