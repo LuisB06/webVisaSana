@@ -5,8 +5,10 @@ import {
     saveShoppingCar,
     updateTask,
     saveSale,
-    deleteShoppingCar
-} from "./firebase.js"
+    deleteShoppingCar,
+    getSale
+} from "./firebase.js";
+import { generate_report } from "./generate-pdf.js";
 
 
 const id_producto_autocompletado=document.getElementById("id_producto_autocompletado")
@@ -48,6 +50,7 @@ window.addEventListener("DOMContentLoaded",async ()=>{
                 ...element.item.objeto
             }
             elements_form.precio.value=select_product.precio
+            elements_form.cantidad.setAttribute("max",String(select_product.stock));
             elements_form.cantidad_total.innerHTML=`/${select_product.stock}`
         }
     });
@@ -151,7 +154,18 @@ form_producto.addEventListener("submit",(e)=>{
 });
 
 elements_form.cantidad.addEventListener("keyup",(e)=>{
-    if(elements_form.precio.value!=="") elements_form.total.value=parseFloat(elements_form.cantidad.value)*parseFloat(elements_form.precio.value)
+    const max=Number(elements_form.cantidad.getAttribute("max"));
+
+    if(!isNaN(max)){
+        const value=String(elements_form.cantidad.value);
+        const old_value=value.slice(0,value.length-1);
+
+        if(Number(value)>max){elements_form.cantidad.value=old_value; return;};
+    }
+
+    
+    if(elements_form.precio.value!=="" && elements_form.cantidad.value!=="") elements_form.total.value=parseFloat(elements_form.cantidad.value)*parseFloat(elements_form.precio.value);
+    else elements_form.total.value="";
 });
 
 btn_comprar.addEventListener("click",async (e)=>{
@@ -171,7 +185,7 @@ btn_comprar.addEventListener("click",async (e)=>{
             });
             total+=item.cantidad*product.precio
         }
-        saveSale(
+        const sale=await saveSale(
             products_sale,
             `${date_now.getFullYear()}-${date_now.getMonth()+1}-${date_now.getDate()}`,
             total
@@ -182,6 +196,12 @@ btn_comprar.addEventListener("click",async (e)=>{
             elements_form.total_compra.innerHTML=""
         });
         alert("EXITO AL REALIZAR LA COMPRA");
+
+        const new_sale= await getSale(sale.id);
+        const date=document.createElement("input");
+
+        date.value="";
+        generate_report([new_sale.data()],date);
     }
     else alert("Por favor añada productos.");
 });

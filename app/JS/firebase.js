@@ -74,14 +74,15 @@ export const onGetShoppingCar=(callback)=>onSnapshot(collection(db,"shoppingcar"
 
 //colleccion ventas
 export const saveSale=(products,fecha,total)=>{
-  addDoc(collection(db,"sale"),{
+  return addDoc(collection(db,"sale"),{
     products,
     fecha,
     total
-  })
+  });
 }
 
-export const onGetSale=(callback)=>onSnapshot(collection(db,"sale"),callback)
+export const onGetSale=(callback)=>onSnapshot(collection(db,"sale"),callback);
+export const getSale=(id)=>getDoc(doc(db,"sale",id));
 
 
 //colecion user

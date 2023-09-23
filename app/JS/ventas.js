@@ -1,10 +1,10 @@
-import {onGetSale} from "./firebase.js"
-import { open_pdf } from "./generate-pdf.js"
+import {onGetSale, getSale} from "./firebase.js"
+import { generate_report } from "./generate-pdf.js"
 
 const build_table=(list_h_ventas_element, list_h_ventas_array)=>{
     let html="";
 
-    list_h_ventas_array.forEach(item=>{
+    list_h_ventas_array.forEach((item,index)=>{
         html+=/*html*/`
             <tr>
                 <td>${item.fecha}</td>
@@ -39,11 +39,30 @@ const build_table=(list_h_ventas_element, list_h_ventas_array)=>{
                     </table>
                 </td>
                 <td>${item.total}</td>
+                <td>
+                    <button class ='btn-pdf btn btn-outline-success' data-id="${index}" >PDF</button>
+                </td>
             </tr>
         `;
     });
 
     list_h_ventas_element.innerHTML=html;
+
+    const btn_pdf=list_h_ventas_element.querySelectorAll(".btn-pdf");
+
+    btn_pdf.forEach(item=>{
+        item.addEventListener("click",({target:{dataset}})=>{
+            (async ()=>{
+                const id=Number(dataset.id);
+                const date=document.createElement("input");
+
+                date.value="";
+                if(list_h_ventas_array.lenght<id+1) return;
+
+                generate_report([list_h_ventas_array[id]],date);
+            })()
+        });
+    })
 }
 
 const filter_by_date=(list_h_ventas_array,input_date_element)=>{
@@ -86,136 +105,7 @@ window.addEventListener("DOMContentLoaded",async(e)=>{
 
     btn_pdf.addEventListener("click",()=>{
         const sales=filter_by_date(list_h_ventas_array,date);
-        let total_sales=0;
-        const date_now=new Date(Date.now());
-        const date_now_string=`${date_now.getUTCFullYear()}-${date_now.getUTCMonth()+1}-${date_now.getUTCDate()}`;
-        const date_filter=date.value;
-
-        sales.forEach(item=>{
-            total_sales+=parseFloat(item.total);
-        });
-
-        const document_definition={
-            info:{
-                title: `Reporte Ventas - ${date_now_string}`,
-                author: "Vida Sana",
-                subject: "Reporte PDF"
-            },
-            pageSize: "A4",
-            pageOrientation: 'portrait',
-            pageMargins: [40,60,40,60],
-            header: (currentPage, pageCount)=>[
-                {
-                    text: currentPage.toString() + ' de ' + pageCount,
-                    alignment: "right",
-                    style:["m-10"]
-                },
-            ],
-            content: [
-                {text: "Vida Sana", style: "header"},
-                {
-                    image: "logo",
-                    width: 100,
-                    height: 100,
-                    style: "logo"
-                },
-                {
-                    layout: 'lightHorizontalLines',
-                    table:{
-                        widths: ["auto","*"],
-                        body:[
-                            ["",""],
-                            [{text: "Título:", style:["size","table-header"]},{text:" Reporte de Ventas Vida Sana", size:["size"]}],
-                            [{text: "Fecha del Reporte:", style:["size","table-header"]},{text: date_now_string, style:["size"]}],
-                            [{text: "Total de Ventas:", style:["size","table-header"]},{text: `$ ${total_sales.toFixed(2)}`, style:["size"]}],
-                        ]
-                    }
-                },
-                {
-                    layout: 'lightHorizontalLines',
-                    table:{
-                        headerRows: 2,
-                        widths: ["auto","*","auto"],
-                        body:[
-                            ["","",""],
-                            ...(()=>{
-                                const table_sales=[
-                                    [{text: "Fecha", style: ["size", "table-header"]},{text: "Lista de Productos", style:["size","table-header"]}, {text: "Total", style:["size","table-header"]}]
-                                ];
-
-                                sales.forEach(item=>{
-                                    table_sales.push([
-                                        {text: item.fecha, style: ["size"]},
-                                        {
-                                            layout: 'lightHorizontalLines',
-                                            table:{
-                                                headerRows: 2,
-                                                widths: ["*","auto","auto","auto"],
-                                                body:[
-                                                    ...(()=>{
-                                                        const table_products=[
-                                                            [{text:"Producto", style:["size", "table-header"]},{text:"Precio", style:["size", "table-header"]},{text:"Cantidad", style:["size", "table-header"]},{text:"Total", style:["size", "table-header"]}]
-                                                        ];
-
-                                                        item.products.forEach(product=>{
-                                                            table_products.push([
-                                                                {text: product.name, style: ["size"]},
-                                                                {text: `$ ${product.precio}`, style: ["size"]},
-                                                                {text: product.cantidad, style: ["size"]},
-                                                                {text: `$ ${product.total}`, style: ["size"]}
-                                                            ]);
-                                                        });
-
-                                                        return table_products;
-                                                    })()
-                                                ]
-                                            }
-                                        },
-                                        {text: `$ ${item.total}`, style: ["size"]}
-                                    ]);
-                                });
-
-                                return table_sales;
-                            })()
-                        ]
-                    }
-                }
-            ],
-            images:{
-                //"logo": "http://127.0.0.1:5500/img/128px_logo.png",
-                //"logo": "http://ubuntu-pc/img/3765556_cabbage_lettuce_salad_icon.svg",
-                "logo": "http://ubuntu-pc/img/128px_logo.png"
-            },
-            styles:{
-                "size":{
-                    fontSize: 12,
-                    margin:[0,5,0,5]
-                },
-                "table-header":{
-                    bold: true
-                },
-                "logo":{
-                    alignment: "center",
-                    margin:[0,0,0,10]
-                },
-                "m-10":{
-                    margin:[10,10,10,10]
-                },
-                "header":{
-                    fontSize: "30",
-                    alignment: "center",
-                    bold: true
-                }
-            }
-        };
-
         
-        if(date_filter!=="") document_definition.content[2].table.body.push([
-            {text: "Filtrado por:", style:["size","table-header"]},
-            {text: date_filter, style:["size"]},
-        ]);
-        
-
-        open_pdf(document_definition);
+        generate_report(sales,date);
     });
 });
