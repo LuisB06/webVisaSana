@@ -5,3 +5,17 @@
     transition: all 1s ease;
     z-index: 1000;
 }
+
+
+.list_siderbar_loader {
+    animation: showsidebar 1s;
+}
+
+@keyframes showsidebar {
+    from{
+        opacity: 0;
+    }
+    to{
+        opacity: 100;
+    }
+}

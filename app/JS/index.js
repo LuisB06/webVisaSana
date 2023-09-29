@@ -8,12 +8,14 @@ import {
 
 const taskForm = document.getElementById('task-form');
 const tasksContainer = document.getElementById('list_products');
+const form_modal=document.getElementById('form-modal');
+const modal=new bootstrap.Modal(form_modal);
 
 let editStatus = false;
 let id = '';
 
 const build_btn_delete=()=>{
-    const btnDelete = tasksContainer.querySelectorAll('.btn-delete')
+    const btnDelete = tasksContainer.querySelectorAll('.btn-delete');
 
     btnDelete.forEach(btn => {
         btn.addEventListener('click', ({target: {dataset}}) => {
@@ -33,7 +35,8 @@ const build_btn_delete=()=>{
 }
 
 const build_btn_edit=()=>{
-    const btnEdit = tasksContainer.querySelectorAll('.btn-edit')
+    const btnEdit = tasksContainer.querySelectorAll('.btn-edit');
+
     btnEdit.forEach(btn => {
         btn.addEventListener('click', async (e) =>{
             const doc = await getTask(e.target.dataset.id)
@@ -41,15 +44,21 @@ const build_btn_edit=()=>{
 
             taskForm['task-name'].value = task.name
             taskForm['task-description'].value = task.description
-            taskForm['task-stock'].value = task.stock
+            taskForm['task-stock'].value = task.stock;
             taskForm['task-precio'].value = task.precio
+
+            taskForm['task-name'].parentNode.classList.add("is-filled");
+            taskForm['task-description'].parentNode.classList.add("is-filled");
+            taskForm['task-stock'].parentNode.classList.add("is-filled");
+            taskForm['task-precio'].parentNode.classList.add("is-filled");
 
 
             editStatus = true;
             id = doc.id;
 
-            taskForm["btn-task-save"].innerText = 'Update'
-        })
+            //taskForm["btn-task-save"].innerText = 'Actualizar';
+            modal.show();
+        });
     });
 }
 
@@ -65,8 +74,8 @@ const build_table=(list_produts,element_list_products)=>{
                 <td>${task.stock}</td>
                 <td>${task.precio}</td>
                 <td>
-                    <button class ='btn-delete btn btn-outline-danger' data-id="${task.id}">Delete</button>
-                    <button class ='btn-edit btn btn-outline-primary' data-id="${task.id}" style="margin-left: 10px;">Edit</button>
+                    <button class="btn-delete btn bg-gradient-danger" data-id="${task.id}">Eliminar</button>
+                    <button class="btn-edit btn bg-gradient-success" data-id="${task.id}">Editar</button>
                 </td>
             </tr>
         `
@@ -189,10 +198,11 @@ taskForm.addEventListener("submit", (e) => {
         });
 
         editStatus = false;
-        taskForm["btn-task-save"].innerText = 'Save'
+        //taskForm["btn-task-save"].innerText = 'Guardar';
     }
 
     taskForm.reset();
+    modal.hide();
 
     const header_list_products=document.getElementById("header_list_products");
     const th=header_list_products.querySelectorAll("th");
@@ -202,4 +212,12 @@ taskForm.addEventListener("submit", (e) => {
         item.classList.remove("asc");
         item.classList.remove("desc");
     });
+});
+
+form_modal.addEventListener("hidden.bs.modal",(e)=>{
+    taskForm.reset();
+    taskForm['task-name'].parentNode.classList.remove("is-filled");
+    taskForm['task-description'].parentNode.classList.remove("is-filled");
+    taskForm['task-stock'].parentNode.classList.remove("is-filled");
+    taskForm['task-precio'].parentNode.classList.remove("is-filled");
 });

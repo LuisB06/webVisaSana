@@ -25,8 +25,6 @@ window.addEventListener("DOMContentLoaded",()=>{
 
             const valid_password=bcrypt.compareSync(password.value,user.password);
 
-            console.log(valid_password);
-
             if(!valid_password){alert(error_message); return;}
 
             const role=user.role;
