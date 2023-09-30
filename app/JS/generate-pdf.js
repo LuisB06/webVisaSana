@@ -99,7 +99,7 @@ export const generate_report = (sales, date) => {
             }
         ],
         images: {
-            "logo": "http://127.0.0.1:5500/img/128px_logo.png"
+            "logo": "https://vidasanaec.netlify.app/img/512px_logo.png"
         },
         styles: {
             "size": {

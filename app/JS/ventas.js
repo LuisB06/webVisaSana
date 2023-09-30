@@ -40,7 +40,7 @@ const build_table=(list_h_ventas_element, list_h_ventas_array)=>{
                 </td>
                 <td>${item.total}</td>
                 <td>
-                    <button class ='btn-pdf btn btn-outline-success' data-id="${index}" >PDF</button>
+                    <button class="btn-pdf btn bg-gradient-success" data-id="${index}">PDF</button>
                 </td>
             </tr>
         `;

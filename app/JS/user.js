@@ -1,6 +1,9 @@
 import { saveUser, getByEmail, updateUser, onGetUsers, getUser, deleteUser } from "./firebase.js";
 import { bcrypt } from "./bcrypt.js";
 
+const form_modal=document.getElementById('form-modal');
+const modal=new bootstrap.Modal(form_modal);
+
 const loadUserToForm = (data_user, btn_submit)=>{
     const btn_update = document.querySelectorAll(".btn-edit");
 
@@ -16,6 +19,14 @@ const loadUserToForm = (data_user, btn_submit)=>{
             data_user.action.value="2";
             btn_submit.innerHTML="Update";
             data_user.password.removeAttribute("required");
+
+            data_user.name.parentNode.classList.add("is-filled");
+            data_user.lastname.parentNode.classList.add("is-filled");
+            data_user.email.parentNode.classList.add("is-filled");
+            data_user.role.parentNode.classList.add("is-filled");
+            data_user.address.parentNode.classList.add("is-filled");
+
+            modal.show();
         });
     });
 }
@@ -47,8 +58,8 @@ const showUsers = (data_user,btn_submit)=>{
                     <td>${user.role==="A"?"Jefe":"Empleado"}</td>
                     <td>${user.address}</td>
                     <td>
-                        <button class ='btn-delete btn btn-outline-danger' data-id="${item.id}">Delete</button>
-                        <button class ='btn-edit btn btn-outline-primary' data-id="${item.id}" style="margin-left: 10px;">Edit</button>
+                        <button class="btn-delete btn bg-gradient-danger" data-id="${item.id}">Eliminar</button>
+                        <button class="btn-edit btn bg-gradient-success" data-id="${item.id}">Editar</button>
                     </td>
                 </tr>
             `;
@@ -101,6 +112,7 @@ window.addEventListener("DOMContentLoaded",()=>{
                     data_user.address.value
                 );
                 fm.reset();
+                modal.hide();
 
                 return;
             }
@@ -118,6 +130,7 @@ window.addEventListener("DOMContentLoaded",()=>{
             data_user.password.setAttribute("required","true");
             data_user.action.value="1";
             fm.reset();
+            modal.hide();
         } catch (e) {
             alert("Ha ocurrido un error al intentar preocesar el usuario, por favor contactese con el administrador.");
             console.log(e);
@@ -125,4 +138,14 @@ window.addEventListener("DOMContentLoaded",()=>{
     });
 
     showUsers(data_user,btn_submit);
+
+    form_modal.addEventListener("hidden.bs.modal",(e)=>{
+        fm.reset();
+        data_user.name.parentNode.classList.remove("is-filled");
+        data_user.lastname.parentNode.classList.remove("is-filled");
+        data_user.email.parentNode.classList.remove("is-filled");
+        data_user.role.parentNode.classList.remove("is-filled");
+        data_user.address.parentNode.classList.remove("is-filled");
+        data_user.password.parentNode.classList.remove("is-filled");
+    });
 });

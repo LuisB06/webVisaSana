@@ -26,6 +26,9 @@ const list_soppingcar=document.getElementById("list_shoppingcar")
 const btn_comprar=document.getElementById("btn_comprar")
 let shoppingcar=[]
 
+const form_modal=document.getElementById('form-modal');
+const modal=new bootstrap.Modal(form_modal);
+
 window.addEventListener("DOMContentLoaded",async ()=>{
     onGetTasks((querySnapshot)=>{
         while(productos.length>0) productos.pop()
@@ -51,7 +54,8 @@ window.addEventListener("DOMContentLoaded",async ()=>{
             }
             elements_form.precio.value=select_product.precio
             elements_form.cantidad.setAttribute("max",String(select_product.stock));
-            elements_form.cantidad_total.innerHTML=`/${select_product.stock}`
+            elements_form.cantidad_total.innerHTML=`/${select_product.stock}`;
+            elements_form.precio.parentNode.classList.add("is-filled");
         }
     });
 
@@ -78,13 +82,13 @@ window.addEventListener("DOMContentLoaded",async ()=>{
     
                 list_soppingcar.innerHTML+=/*html*/`
                     <tr>
-                        <td>
-                            <button class ='btn-delete btn btn-outline-danger' data-id="${item.id}" data-quantity="${item.cantidad}" data-productid="${item.id_product}">X</button>
-                        </td>
                         <td>${product.name}</td>
                         <td>${item.cantidad}</td>
                         <td>${product.precio}</td>
                         <td>${item.cantidad*product.precio}</td>
+                        <td>
+                            <button class="btn-delete btn bg-gradient-danger" data-id="${item.id}" data-quantity="${item.cantidad}" data-productid="${item.id_product}">Eliminar</button>
+                        </td>
                     </tr>
                 `
                 total_compra+=item.cantidad*product.precio
@@ -146,7 +150,8 @@ form_producto.addEventListener("submit",(e)=>{
             form_producto.reset()
             id_producto_autocompletado.value=""
             select_product={}
-            elements_form.cantidad_total.innerHTML=""
+            elements_form.cantidad_total.innerHTML="/0"
+            modal.hide();
         }
         else alert("La cantidad establecida no puede ser mayor a la existente.")
     }
@@ -164,8 +169,14 @@ elements_form.cantidad.addEventListener("keyup",(e)=>{
     }
 
     
-    if(elements_form.precio.value!=="" && elements_form.cantidad.value!=="") elements_form.total.value=parseFloat(elements_form.cantidad.value)*parseFloat(elements_form.precio.value);
-    else elements_form.total.value="";
+    if(elements_form.precio.value!=="" && elements_form.cantidad.value!=="") {
+        elements_form.total.value=parseFloat(elements_form.cantidad.value)*parseFloat(elements_form.precio.value);
+        elements_form.total.parentNode.classList.add("is-filled");
+    }
+    else {
+        elements_form.total.value=""; 
+        elements_form.total.parentNode.classList.remove("is-filled");
+    }
 });
 
 btn_comprar.addEventListener("click",async (e)=>{
@@ -195,7 +206,7 @@ btn_comprar.addEventListener("click",async (e)=>{
             list_soppingcar.innerHTML=""
             elements_form.total_compra.innerHTML=""
         });
-        alert("EXITO AL REALIZAR LA COMPRA");
+        alert("EXITO AL REALIZAR LA VENTA");
 
         const new_sale= await getSale(sale.id);
         const date=document.createElement("input");
@@ -217,6 +228,17 @@ const remove_shopping_car=async (id,quantity,product_id)=>{
     form_producto.reset();
     id_producto_autocompletado.value="";
     select_product={};
-    elements_form.cantidad_total.innerHTML="";
+    elements_form.cantidad_total.innerHTML="/0";
     if(shoppingcar.length<=0) elements_form.total_compra.innerHTML="";
 }
+
+form_modal.addEventListener("hidden.bs.modal",(e)=>{
+    form_producto.reset();
+    id_producto_autocompletado.value=""
+    select_product={}
+    elements_form.cantidad_total.innerHTML="/0";
+    elements_form.precio.parentNode.classList.remove("is-filled");
+    elements_form.cantidad.parentNode.classList.remove("is-filled");
+    elements_form.total.parentNode.classList.remove("is-filled");
+    id_producto_autocompletado.parentNode.classList.remove("is-filled");
+});

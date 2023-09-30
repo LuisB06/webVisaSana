@@ -22,11 +22,16 @@ const  login_validation=async ()=>{
     const register_product = document.getElementById("product_register");
     const register_user = document.getElementById("user_register");
     const loader_container = document.getElementById("loader-container");
+    const list_sidebar_menu= document.getElementById("list_sidebar_menu");
 
     if(!new_data_user.exists()) { $.unblockUI(); logout(); alert("Usuario invalido."); return; }
 
     role=result_user.role;
     $.unblockUI();
+    if(typeof(list_sidebar_menu)!=="undefined" && list_sidebar_menu!==null){
+        list_sidebar_menu.removeAttribute("hidden");
+        list_sidebar_menu.classList.add("list_siderbar_loader");
+    }
     if(typeof(loader_container)!=="undefined" && loader_container!==null){
         loader_container.style.visibility="hidden";
         loader_container.style.opacity="0";
@@ -46,8 +51,8 @@ const  login_validation=async ()=>{
     }
 
     if(url==="/" || url==="/registroUsuario.html"){
-        if(role==="A") window.location.replace("inicio.html");
-        if(role==="B") window.location.replace("producto.html");
+        if(role==="A") window.location.replace("acercade.html");
+        if(role==="B") window.location.replace("acercade.html");
 
         return;
     }

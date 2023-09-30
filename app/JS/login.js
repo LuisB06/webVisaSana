@@ -25,8 +25,6 @@ window.addEventListener("DOMContentLoaded",()=>{
 
             const valid_password=bcrypt.compareSync(password.value,user.password);
 
-            console.log(valid_password);
-
             if(!valid_password){alert(error_message); return;}
 
             const role=user.role;
@@ -37,8 +35,8 @@ window.addEventListener("DOMContentLoaded",()=>{
             
             if(remember.checked) localStorage.setItem("auth-user",JSON.stringify(save_storage));
             else sessionStorage.setItem("auth-user",JSON.stringify(save_storage));
-            if(role==="A") {window.location.replace("/inicio.html"); return;}
-            if(role==="B") {window.location.replace("/producto.html"); return;}
+            if(role==="A") {window.location.replace("/acercade.html"); return;}
+            if(role==="B") {window.location.replace("/acercade.html"); return;}
         } catch (e) {
             alert("Ha Ocurrido un Error al Intentar Iniciar Sesión, Por favor contactese con el Administrador.");
             console.log(e);
