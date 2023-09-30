@@ -51,8 +51,8 @@ const  login_validation=async ()=>{
     }
 
     if(url==="/" || url==="/registroUsuario.html"){
-        if(role==="A") window.location.replace("inicio.html");
-        if(role==="B") window.location.replace("producto.html");
+        if(role==="A") window.location.replace("acercade.html");
+        if(role==="B") window.location.replace("acercade.html");
 
         return;
     }
